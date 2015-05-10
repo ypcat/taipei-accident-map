@@ -26,12 +26,21 @@ function initialize() {
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
   accidents.map(function(a){
-      var coord = proj4('TWD97').inverse([a['XUL_CORD'], a['YUL_CORD']])
-      new google.maps.Marker({
-          position: new google.maps.LatLng(coord[1], coord[0]),
+      var coord1 = proj4('TWD97').inverse([a['XUL_CORD'], a['YUL_CORD']])
+      var coord2 = proj4('TWD97').inverse([a['XLR_CORD'], a['YLR_CORD']])
+      var center = new google.maps.LatLng((coord1[1] + coord2[1]) * 0.5, (coord1[0] + coord2[0]) * 0.5)
+      var populationOptions = {
+          strokeColor: '#FF0000',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: '#FF0000',
+          fillOpacity: 0.35,
           map: map,
-          title: a['_id']
-      });
+          center: center,
+          radius: a['A1A2'] * 50
+      };
+      // Add the circle for this city to the map.
+      cityCircle = new google.maps.Circle(populationOptions);
   })
 }
 
